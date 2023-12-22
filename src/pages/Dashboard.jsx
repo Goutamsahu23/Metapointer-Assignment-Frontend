@@ -66,7 +66,7 @@ export default function Dashboard() {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Box position="absolute " backgroundColor="blue" width="96rem">
+        <Box position="absolute " backgroundColor="blue" width="100%">
           <Toolbar sx={{ pr: '24px' }}>
             <Typography component="h1" variant="h6" color="inherit" noWrap>
               Dashboard
