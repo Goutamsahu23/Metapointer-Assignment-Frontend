@@ -57,7 +57,7 @@ export default function Dashboard() {
     };
 
     fetchUserData();
-  }, [transactions]); 
+  }, []); 
 
 
   const theme = useTheme();
