@@ -13,12 +13,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate,Link } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phoneNum: '',
@@ -37,7 +39,7 @@ export default function SignUp() {
     event.preventDefault();
 
     try {
-
+      setLoading(true);
       const response = await axios.post('https://metapointer-backend.onrender.com/api/v1/signup', formData);
       const { message } = response.data;
       
@@ -46,6 +48,8 @@ export default function SignUp() {
     } catch (error) {
       const { message } = error.response.data;
       toast.error(message);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -121,8 +125,9 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              Sign Up
+              {loading ? <CircularProgress size={24} /> : 'Sign Up'}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

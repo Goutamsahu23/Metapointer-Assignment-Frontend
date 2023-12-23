@@ -1,11 +1,15 @@
 // SendMoney.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, TextField, Typography, Container, Grid } from '@mui/material';
+import { Button, TextField, Typography, Container, Grid, CircularProgress } from '@mui/material';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 
 const SendMoney = () => {
+const navigate=useNavigate();
+    const [loading, setLoading] = useState(false);
+
     const [formData, setFormData] = useState({
         phoneNum: '',
         amount: '',
@@ -24,6 +28,7 @@ const SendMoney = () => {
         e.preventDefault();
 
         try {
+            setLoading(true);
 
             const token = localStorage.getItem('authToken');
 
@@ -40,10 +45,15 @@ const SendMoney = () => {
             const { message, cashback } = response.data
             toast.success(message);
             toast.success(`cashback:: ${cashback}`);
+            navigate('/dashboard');
         } catch (error) {
+            const {message}=error.response.data;
+            toast.error(message);
             console.error('Error sending money:', error);
-            setResponse({ success: false, message: 'An error occurred.' });
-        }
+            setResponse({ success: false, message: message });
+        }finally {
+            setLoading(false);
+          }
     };
 
 
@@ -76,8 +86,8 @@ const SendMoney = () => {
                         />
                     </Grid>
                 </Grid>
-                <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                    Send Money
+                <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ mt: 3, mb: 2 }}>
+                {loading ? <CircularProgress size={24} /> : 'Send Money'}
                 </Button>
             </form>
             {response && (

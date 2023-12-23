@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -14,12 +15,14 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     phoneNum: '',
     password: '',
@@ -36,11 +39,12 @@ export default function SignIn() {
     event.preventDefault();
 
     try {
+      setLoading(true);
 
       const response = await axios.post('https://metapointer-backend.onrender.com/api/v1/login', formData);
 
       console.log(response.data);
-      const {token, message } = response.data;
+      const { token, message } = response.data;
       localStorage.setItem('authToken', token);
       toast.success(message);
       navigate('/dashboard');
@@ -49,6 +53,8 @@ export default function SignIn() {
       console.error('Error submitting data:', error);
       const { message } = error.response.data;
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,8 +108,9 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              Sign In
+              {loading ? <CircularProgress size={24} /> : 'Sign In'}
             </Button>
             <Grid container>
               <Grid item xs>
